@@ -9,18 +9,25 @@ from langchain_google_genai import ChatGoogleGenerativeAI
 from langchain.chains.question_answering import load_qa_chain
 from langchain.prompts import PromptTemplate
 from dotenv import load_dotenv
+from docx import Document
+from io import BytesIO
 
 load_dotenv()
 os.getenv("GOOGLE_API_KEY")
 genai.configure(api_key=os.getenv("GOOGLE_API_KEY"))
 
-def get_pdf_text(pdf_docs):
-    text=""
-    for pdf in pdf_docs:
-        pdf_reader= PdfReader(pdf)
-        for page in pdf_reader.pages:
-            text+= page.extract_text()
-    return  text
+def get_pdf_text(docs):
+    text = ""
+    for doc in docs:
+        if doc.name.endswith(".pdf"):
+            pdf_reader = PdfReader(doc)
+            for page in pdf_reader.pages:
+                text += page.extract_text()
+        elif doc.name.endswith(".docx"):
+            docx_file = Document(BytesIO(doc.read()))
+            for paragraph in docx_file.paragraphs:
+                text += paragraph.text
+    return text
 
 def get_text_chunks(text):
     text_splitter = RecursiveCharacterTextSplitter(chunk_size=10000, chunk_overlap=1000)
