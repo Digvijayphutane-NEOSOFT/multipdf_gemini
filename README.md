@@ -11,3 +11,6 @@ To run globly :
 	&& sudo apt install ngrok
 4. configure ngrok : ngrok authtoken <ngrok api key> 
 5. ngrok http 8501
+
+note : create .env file and type 
+GOOGLE_API_KEY = "<Your gemini api key>"
